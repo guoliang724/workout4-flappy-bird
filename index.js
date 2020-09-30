@@ -11,6 +11,7 @@ var bird = {
   pipeArr: [],
   pipeLastIndex: 6,
   score: 0,
+
   init() {
     this.initData();
     this.animate();
@@ -24,6 +25,13 @@ var bird = {
     this.oMask = this.el.getElementsByClassName("mask")[0];
     this.oEnd = this.el.getElementsByClassName("end")[0];
     this.oFinalScore = this.el.getElementsByClassName("final-score")[0];
+    this.scoreArr = this.getScore();
+    this.oRestart = this.oEnd.getElementsByClassName("restart")[0];
+    this.oRankList = this.oEnd.getElementsByClassName("rank-list")[0];
+  },
+  getScore() {
+    var scoreArr = getLocal("score");
+    return scoreArr ? scoreArr : [];
   },
   animate() {
     var count = 0;
@@ -33,8 +41,7 @@ var bird = {
         this.birdDrop();
         this.pipeMove();
       }
-      count++;
-      if (count % 10 === 0) {
+      if (++count % 10 === 0) {
         if (!this.startFlag) {
           this.startBound();
           this.birdJump();
@@ -100,6 +107,7 @@ var bird = {
   handle() {
     this.handleStart();
     this.handleClick();
+    this.handleRestart();
   },
   handleStart() {
     this.oStart.onclick = () => {
@@ -119,6 +127,11 @@ var bird = {
       if (!e.target.classList.contains("start")) {
         this.birdStepY = -10;
       }
+    };
+  },
+  handleRestart() {
+    this.oRestart.onclick = () => {
+      window.location.reload();
     };
   },
   createPipe(x) {
@@ -151,23 +164,73 @@ var bird = {
         oDownPipe.style.left = lastPipeLeft + 300 + "px";
         this.pipeLastIndex = ++this.pipeLastIndex % this.pipeLength;
 
-        var upHeight = 50 + Math.floor(Math.random() * 175);
-        var donwHeight = 600 - 150 - upHeight;
-        oUpPipe.style.height = upHeight + "px";
-        oDownPipe.style.height = donwHeight + "px";
+        // oUpPipe.style.height = upHeight + "px";
+        // oDownPipe.style.height = donwHeight + "px";
         continue;
       }
-
       oUpPipe.style.left = x + "px";
       oDownPipe.style.left = x + "px";
     }
   },
+  getPipeHeight() {
+    var upHeight = 50 + Math.floor(Math.random() * 175);
+    var donwHeight = 600 - 150 - upHeight;
+    return {
+      up: upHeight,
+      down: donwHeight,
+    };
+  },
+  setScore() {
+    this.scoreArr.push({
+      score: this.score,
+      time: this.getDate(),
+    });
+    setLocal("score", this.scoreArr);
+  },
+  getDate() {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = formatNum(d.getMonth() + 1);
+    var date = formatNum(d.getDate());
+    var hour = formatNum(d.getHours());
+    var minute = formatNum(d.getMinutes());
+    var second = formatNum(d.getSeconds());
+    return `${year}.${month}.${date} ${hour}:${minute}:${second}`;
+  },
   failGame() {
     clearInterval(this.timer);
+    this.setScore();
     this.oMask.style.display = "block";
     this.oEnd.style.display = "block";
     this.oBird.style.display = "none";
     this.oScore.style.display = "none";
     this.oFinalScore.innerText = this.score;
+    this.randerRankList();
+  },
+  randerRankList() {
+    var template = "";
+    for (var i = 0; i < this.scoreArr.length; i++) {
+      var degreeClass = "";
+      switch (i) {
+        case 0:
+          degreeClass = "first";
+          break;
+        case 1:
+          degreeClass = "second";
+          break;
+        case 2:
+          degreeClass = "third";
+          break;
+      }
+
+      template += `
+      <li class="rank-item">
+      <span class="rank-degree ${degreeClass}">${i + 1}</span>
+      <span class="rank-score">${this.scoreArr[i].score}</span>
+      <span class="rank-time">${this.scoreArr[i].time}</span>
+    </li>
+      `;
+    }
+    this.oRankList.innerHTML = template;
   },
 };

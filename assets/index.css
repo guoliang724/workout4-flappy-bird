@@ -10,11 +10,31 @@
   background-image: url("../images/birds.png");
   width: 30px;
   height: 30px;
-  right: 50%;
-  margin-left: 15px;
+  left: 50%;
+  transform: translateX(-50%);
   top: 260px;
   transition: top 0.3s linear;
 }
+
+.start {
+  top: 320px;
+  position: absolute;
+  font-size: 30px;
+  font-weight: bold;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: all 0.3s linear;
+}
+.start.start-white {
+  color: #fff;
+  font-size: 24px;
+}
+.start.start-blue {
+  color: #09f;
+  font-size: 36px;
+}
+
 .score {
   position: absolute;
   font-size: 30px;
@@ -41,14 +61,14 @@
   left: 50%;
   transform: translateX(-50%);
   display: none;
+  text-align: center;
   z-index: 3;
 }
 
 .end .over {
-  font-size: 30px;
+  font-size: 35px;
   color: red;
   font-weight: bolder;
-  margin-bottom: 20px;
 }
 
 .end .result,
@@ -57,7 +77,6 @@
   color: #ff0;
   font-size: 20px;
   font-weight: bold;
-  text-align: center;
 }
 
 .end .rank-list {
@@ -72,26 +91,6 @@
   margin-bottom: 10px;
   padding: 0 10px;
   font-size: 13px;
-}
-
-.start {
-  top: 300px;
-  position: absolute;
-  font-size: 30px;
-  font-weight: lighter;
-  left: 50%;
-  transform: translateX(-80%);
-  cursor: pointer;
-  transition: all 0.3s linear;
-}
-
-.start.start-white {
-  color: #fff;
-  font-size: 24px;
-}
-.start.start-blue {
-  color: #09f;
-  font-size: 36px;
 }
 
 .end .rank-degree {
@@ -146,7 +145,7 @@
 .pipe.pipe-up {
   top: 0;
   background-image: url("../images/pipe2.png");
-  background-position: bottom;
+  background-position-y: bottom;
 }
 
 .pipe.pipe-down {

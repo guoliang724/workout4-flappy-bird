@@ -20,7 +20,15 @@ function setLocal(key, value) {
 
 function getLocal(key) {
   var value = localStorage.getItem(key);
+  if (value === null) return;
   if (value[0] === "[" || value[0] === "{") {
     return JSON.parse(value);
   }
+  return value;
+}
+
+function formatNum(number) {
+  if (number < 10) {
+    return "0" + number;
+  } else return number;
 }
